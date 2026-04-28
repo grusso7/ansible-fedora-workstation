@@ -1,0 +1,45 @@
+---
+- name: Install GNOME tools and extensions
+  ansible.builtin.dnf:
+    name:
+      - gnome-tweaks
+      - gnome-shell-extension-dash-to-dock
+      - gnome-shell-extension-blur-my-shell
+      - gnome-shell-extension-user-theme
+      - dconf
+      - python3-psutil
+      - flatpak
+    state: present
+
+- name: Add Flathub repository
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+- name: Install Extension Manager via Flatpak
+  community.general.flatpak:
+    name: com.mattjakeman.ExtensionManager
+    state: present
+    remote: flathub
+
+- name: Set monospace font to UbuntuMono Nerd Font
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/monospace-font-name"
+    value: "'UbuntuMono Nerd Font 11'"
+  become: true
+  become_user: "{{ desktop_user }}"
+
+- name: Set cursor theme to Bibata-Modern-Classic
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/cursor-theme"
+    value: "'Bibata-Modern-Classic'"
+  become: true
+  become_user: "{{ desktop_user }}"
+
+- name: Enable dash-to-dock, user-theme and blur-my-shell extensions
+  community.general.dconf:
+    key: "/org/gnome/shell/enabled-extensions"
+    value: "['dash-to-dock@micxgx.gmail.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'blur-my-shell@aunetx']"
+  become: true
+  become_user: "{{ desktop_user }}"

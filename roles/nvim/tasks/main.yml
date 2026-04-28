@@ -1,0 +1,36 @@
+---
+- name: Install Neovim and dependencies
+  ansible.builtin.dnf:
+    name:
+      - neovim
+      - make
+      - gcc
+      - wl-clipboard
+    state: present
+
+- name: Check if Neovim config exists
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.config/nvim/init.lua"
+  register: nvim_config
+
+- name: Ensure ~/.config/nvim exists
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/nvim"
+    state: directory
+    owner: "{{ desktop_user }}"
+    group: "{{ desktop_user }}"
+    mode: "0755"
+
+- name: Clone LazyVim starter
+  ansible.builtin.git:
+    repo: https://github.com/LazyVim/starter
+    dest: "{{ user_home }}/.config/nvim"
+    version: main
+  become: true
+  become_user: "{{ desktop_user }}"
+  when: not nvim_config.stat.exists
+
+- name: Remove LazyVim git metadata
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/nvim/.git"
+    state: absent

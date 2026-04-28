@@ -1,0 +1,26 @@
+- name: Fedora workstation setup
+  hosts: local
+  become: true
+
+  pre_tasks:
+    - name: Update dnf cache
+      ansible.builtin.dnf:
+        update_cache: true
+      tags: always
+
+  roles:
+    - role: base
+      tags: base
+    - role: devtools
+      tags: devtools
+    - role: shell
+      tags: shell
+    # Li aggiungeremo man mano:
+    - role: nvim
+      tags: nvim
+    - role: gnome
+      tags: gnome
+    - role: fonts
+      tags: fonts
+    - role: themes
+      tags: themes

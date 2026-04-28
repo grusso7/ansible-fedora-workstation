@@ -1,0 +1,23 @@
+---
+- name: Ensure .local/share/icons exists
+  ansible.builtin.file:
+    path: "{{ user_home }}/.local/share/icons"
+    state: directory
+    mode: "0755"
+    owner: "{{ desktop_user }}"
+    group: "{{ desktop_user }}"
+
+- name: Check if Bibata-Modern-Classic is installed
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.local/share/icons/Bibata-Modern-Classic/index.theme"
+  register: bibata_cursor
+
+- name: Download and extract Bibata cursor theme
+  ansible.builtin.unarchive:
+    src: "https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-Modern-Classic.tar.xz"
+    dest: "{{ user_home }}/.local/share/icons"
+    remote_src: yes
+  become: true
+  become_user: "{{ desktop_user }}"
+  when: not bibata_cursor.stat.exists
+  ignore_errors: "{{ ansible_check_mode }}"

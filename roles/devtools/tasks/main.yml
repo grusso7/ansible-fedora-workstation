@@ -1,0 +1,14 @@
+---
+- name: Enable Copr repository for lazygit
+  community.general.copr:
+    name: dejan/lazygit
+    state: enabled
+
+- name: Install developer tools
+  ansible.builtin.dnf:
+    name:
+      - git
+      - lazygit
+      - ripgrep
+      - fd-find
+    state: present

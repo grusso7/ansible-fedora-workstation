@@ -1,0 +1,21 @@
+---
+- name: Install ZSH and plugins
+  ansible.builtin.dnf:
+    name:
+      - zsh
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
+    state: present
+
+- name: Change default shell to zsh for user {{ desktop_user }}
+  ansible.builtin.user:
+    name: "{{ desktop_user }}"
+    shell: /bin/zsh
+
+- name: Deploy .zshrc configuration
+  ansible.builtin.template:
+    src: zshrc.j2
+    dest: "{{ user_home }}/.zshrc"
+    owner: "{{ desktop_user }}"
+    group: "{{ desktop_user }}"
+    mode: "0644"

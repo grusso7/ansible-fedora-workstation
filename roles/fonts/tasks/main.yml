@@ -1,0 +1,24 @@
+---
+- name: Ensure .local/share/fonts exists
+  ansible.builtin.file:
+    path: "{{ user_home }}/.local/share/fonts"
+    state: directory
+    mode: "0755"
+    owner: "{{ desktop_user }}"
+    group: "{{ desktop_user }}"
+
+- name: Check if UbuntuMono Nerd Font is installed
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.local/share/fonts/UbuntuMonoNerdFontMono-Regular.ttf"
+  register: ubuntu_nerd_font
+
+- name: Download and extract UbuntuMono Nerd Font
+  ansible.builtin.unarchive:
+    src: "https://github.com/ryanoasis/nerd-fonts/releases/download/{{ nerd_fonts_version }}/UbuntuMono.zip"
+    dest: "{{ user_home }}/.local/share/fonts"
+    remote_src: yes
+  become: true
+  become_user: "{{ desktop_user }}"
+  when: not ubuntu_nerd_font.stat.exists
+  ignore_errors: "{{ ansible_check_mode }}"
+  notify: Update font cache

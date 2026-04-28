@@ -1,0 +1,23 @@
+# .zshrc generato da Ansible per {{ desktop_user }}
+
+# Abilita i colori per ls
+alias ls='ls --color=auto'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Configurazione di base della history
+HISTFILE={{ user_home }}/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+setopt sharehistory
+setopt incappendhistory
+
+# Caricamento dei plugin installati via pacchetti Debian
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Prompt minimale
+autoload -Uz compinit && compinit
+PROMPT='%F{green}%n@%m%f:%F{blue}%~%f$ '

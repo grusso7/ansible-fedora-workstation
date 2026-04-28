@@ -1,0 +1,4 @@
+---
+desktop_user: grusso
+user_home: "/home/{{ desktop_user }}"
+nerd_fonts_version: "v3.1.1"
