@@ -48,3 +48,6 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # Prompt minimale
 autoload -Uz compinit && compinit
 PROMPT='%F{green}%n@%m%f:%F{blue}%~%f$ '
+
+# Override locali (Bun, Codex, alias personali, ecc.) — non gestiti da Ansible
+[[ -f {{ user_home }}/.zshrc.local ]] && source {{ user_home }}/.zshrc.local

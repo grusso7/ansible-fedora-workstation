@@ -19,3 +19,14 @@
     owner: "{{ desktop_user }}"
     group: "{{ desktop_user }}"
     mode: "0644"
+
+- name: Ensure .zshrc.local exists for local overrides
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.zshrc.local"
+    content: |
+      # Personalizzazioni locali (Bun, Codex, ecc.)
+      # Questo file non viene sovrascritto da Ansible.
+    owner: "{{ desktop_user }}"
+    group: "{{ desktop_user }}"
+    mode: "0644"
+    force: false
