@@ -1,4 +1,7 @@
+# >>> ansible-managed >>>
 # .zshrc generato da Ansible per {{ desktop_user }}
+
+command -v fastfetch >/dev/null && fastfetch
 
 # Abilita i colori per ls
 alias ls='ls --color=auto'
@@ -48,6 +51,7 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # Prompt minimale
 autoload -Uz compinit && compinit
 PROMPT='%F{green}%n@%m%f:%F{blue}%~%f$ '
+# <<< ansible-managed <<<
 
 # Override locali (Bun, Codex, alias personali, ecc.) — non gestiti da Ansible
 [[ -f {{ user_home }}/.zshrc.local ]] && source {{ user_home }}/.zshrc.local

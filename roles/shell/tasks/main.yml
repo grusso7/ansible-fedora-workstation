@@ -5,20 +5,13 @@
       - zsh
       - zsh-autosuggestions
       - zsh-syntax-highlighting
+      - fastfetch
     state: present
 
 - name: Change default shell to zsh for user {{ desktop_user }}
   ansible.builtin.user:
     name: "{{ desktop_user }}"
     shell: /bin/zsh
-
-- name: Deploy .zshrc configuration
-  ansible.builtin.template:
-    src: zshrc.j2
-    dest: "{{ user_home }}/.zshrc"
-    owner: "{{ desktop_user }}"
-    group: "{{ desktop_user }}"
-    mode: "0644"
 
 - name: Ensure .zshrc.local exists for local overrides
   ansible.builtin.copy:
@@ -30,3 +23,22 @@
     group: "{{ desktop_user }}"
     mode: "0644"
     force: false
+
+- name: Migrate unmanaged .zshrc snippets into .zshrc.local
+  ansible.builtin.script:
+    cmd: migrate_zshrc_local.sh "{{ user_home }}/.zshrc" "{{ user_home }}/.zshrc.local"
+  become: true
+  become_user: "{{ desktop_user }}"
+  # script non supporta check mode: senza questo, --check lo salta e il diff
+  # di .zshrc sembra eliminare Bun/Codex/pnpm senza migrarli.
+  check_mode: false
+  register: zshrc_migrate
+  changed_when: "'MIGRATED' in zshrc_migrate.stdout"
+
+- name: Deploy .zshrc configuration
+  ansible.builtin.template:
+    src: zshrc.j2
+    dest: "{{ user_home }}/.zshrc"
+    owner: "{{ desktop_user }}"
+    group: "{{ desktop_user }}"
+    mode: "0644"
